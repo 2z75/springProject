@@ -2,6 +2,7 @@ package org.wildcodeschool.myblog.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -29,6 +30,10 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(HttpMethod.GET, "/articles/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/articles/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/articles/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/articles/**").hasRole("ADMIN")
                         .requestMatchers("/auth/**").permitAll()
                         .anyRequest().authenticated()
                 )
